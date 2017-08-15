@@ -4,8 +4,17 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
 
+    public enum PlayerState
+    {
+        Alive,
+        Dead
+    }
+
+    PlayerState pState;
+    bool jumpDown;
     public bool grounded;
     public GameObject player;
+
 
     public Rigidbody2D rb;
 
@@ -14,31 +23,32 @@ public class PlayerController : MonoBehaviour {
     {
         player = GameObject.FindGameObjectWithTag("Player");
         rb = GetComponent<Rigidbody2D>();
+        pState = PlayerState.Alive;
 	}
 	
     void Update()
     {
         grounded = checkGroundCollision();
+        if (pState == PlayerState.Alive)
+        {
+            if (Input.GetKey(KeyCode.D))
+            {
+                transform.Translate(Vector3.right * (Time.deltaTime * 10));
+            }
+            if (Input.GetKey(KeyCode.A))
+            {
+                transform.Translate(Vector3.left * (Time.deltaTime * 10));
+            }
+            if (Input.GetKeyDown(KeyCode.Space) && grounded)
+            {
+                StartCoroutine("Jump");
+            }
+        }
     }
 
-	// Update is called once per frame
 	void FixedUpdate () 
     {
-		if(Input.GetKey(KeyCode.D))
-        {
-            transform.Translate(Vector3.right * (Time.deltaTime * 10));
-        }
-        if (Input.GetKey(KeyCode.A))
-        {
-            transform.Translate(Vector3.left * (Time.deltaTime * 10));
-        }
-        if(Input.GetKeyDown(KeyCode.Space) && grounded)
-        {
-            //do a transform on an enumerator (look at NGV2 dash for how to)
-            //transform.Translate(Vector3.up * (Time.deltaTime * 50));
-            //GetComponent<Rigidbody2D>().AddForce(Vector2.up * 50);
-            StartCoroutine("Jump");
-        }
+
 	}
 
     public IEnumerator Jump()
@@ -66,10 +76,10 @@ public class PlayerController : MonoBehaviour {
 
         //get bounds of the capsule collider so we can get the coords of the bottom
         Bounds boxBounds = GetComponent<BoxCollider2D>().bounds;
-        Debug.DrawRay(transform.position, Vector3.down*1.05f, Color.red);
+        Debug.DrawRay(transform.position, Vector3.down*0.7f, Color.red);
 
         //use physics raycast to see if there is anything below the player then allow the jump, limit the distance to make sure its grounded
-            if (Physics2D.Raycast(boxBounds.center, Vector3.down, 1.05f, layerMask))
+            if (Physics2D.Raycast(boxBounds.center, Vector3.down, 0.7f, layerMask))
             {
                 return true;
             }

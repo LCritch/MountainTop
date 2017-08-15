@@ -18,13 +18,16 @@ public class GameManager : MonoBehaviour {
     {
         Player = GameObject.FindGameObjectWithTag("Player");
         fillBlockList();
-        //deathScreen.remainingBlocks = blockAmount;
+        deathScreen.remainingBlocks = blockAmount;
 	}
 	
 	// Update is called once per frame
 	void Update () 
     {
-		
+		if(Input.GetKeyDown(KeyCode.L))
+        {
+            deathScreen.startDeathScreen();
+        }
 	}
 
     void fillBlockList()
@@ -37,6 +40,15 @@ public class GameManager : MonoBehaviour {
             }
         }
         blockAmount = Blocks.Count;
+    }
+
+    public void KillPlayer()
+    {
+        /*stop all game logic, activate the death screen then teleport the player back to the start point
+         * disable any game control to stop player moving/jumping
+         * 
+         */
+
     }
 
     void respawnPlayer()

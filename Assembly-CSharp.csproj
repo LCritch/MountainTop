@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\Gameplay\Arrow.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\ArrowLauncher.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Block.cs" />
      <Compile Include="Assets\Scripts\Gameplay\GameManager.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Obstacle.cs" />

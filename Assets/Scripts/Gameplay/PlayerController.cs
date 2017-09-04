@@ -33,11 +33,13 @@ public class PlayerController : MonoBehaviour {
         {
             if (Input.GetKey(KeyCode.D))
             {
+                player.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
                 transform.Translate(Vector3.right * (Time.deltaTime * 10));
             }
             if (Input.GetKey(KeyCode.A))
             {
-                transform.Translate(Vector3.left * (Time.deltaTime * 10));
+                player.transform.rotation = Quaternion.Euler(new Vector3(0, 180, 0));
+                transform.Translate(Vector3.right * (Time.deltaTime * 10));
             }
             if (Input.GetKeyDown(KeyCode.Space) && grounded)
             {

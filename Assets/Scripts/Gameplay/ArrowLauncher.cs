@@ -34,8 +34,7 @@ public class ArrowLauncher : MonoBehaviour {
         arrowEnd = transform.GetChild(0).gameObject;
         startPosition = arrowShooter.transform.position;
         endPosition = arrowEnd.transform.position;
-        arrowPrefab = Instantiate(Resources.Load("Prefabs/Arrow")) as GameObject;
-        arrowPrefab.transform.position = startPosition;
+        SetArrowPrefab();
         StartCoroutine(DelayArrowFire(delayBetweenArrows));
 	}
 	
@@ -46,6 +45,7 @@ public class ArrowLauncher : MonoBehaviour {
 
 	}
 
+    //Set arrow to fire and rotate the object in the appropriate direction
     void FireArrow()
     {
         switch(aDirection)
@@ -64,11 +64,11 @@ public class ArrowLauncher : MonoBehaviour {
                 break;
 
         }
-        StartCoroutine(FireArrow(speedOfArrow));
+        StartCoroutine(FireArrowAtDirection(speedOfArrow));
         StopCoroutine("DelayArrowFire");
     }
 
-    public IEnumerator FireArrow(float seconds)
+    public IEnumerator FireArrowAtDirection(float seconds)
     {
         float time = 0;
         while(time < seconds)
@@ -83,7 +83,7 @@ public class ArrowLauncher : MonoBehaviour {
         if(arrowPrefab.transform.position == endPosition)
         {
             Debug.Log("Moving arrow back to startPos");
-            StartCoroutine("DelayArrowReturn");
+            StartCoroutine(DelayArrowReturn(1.0f));
         }
         
     }
@@ -96,12 +96,21 @@ public class ArrowLauncher : MonoBehaviour {
         FireArrow();
     }
 
-    public IEnumerator DelayArrowReturn()
+    public IEnumerator DelayArrowReturn(float secondsToWait)
     {
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(secondsToWait);
         arrowPrefab.transform.position = startPosition;
         StartCoroutine(DelayArrowFire(delayBetweenArrows));
-        StopCoroutine("FireArrow");
+        StopCoroutine("FireArrowAtDirection");
+    }
+
+    //Instantiate arrow prefab and set its startLoc and parent info
+    void SetArrowPrefab()
+    {
+        arrowPrefab = Instantiate(Resources.Load("Prefabs/Arrow")) as GameObject;
+        arrowPrefab.transform.position = startPosition;
+        arrowPrefab.transform.parent = gameObject.transform;
+        arrowPrefab.GetComponent<Obstacle>().parent = gameObject;
     }
 
 }

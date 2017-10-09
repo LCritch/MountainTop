@@ -15,13 +15,18 @@ public class Obstacle : MonoBehaviour {
     public ObstacleType oType;
     public GameObject parent;
     public Vector2 knockVector;
+    public GameObject gameManager;
 
+    void Start()
+    {
+        gameManager = GameObject.FindWithTag("Manager");
+    }
+
+    //When player hits the Obstacle, what to do?
     void OnTriggerEnter2D(Collider2D other)
     {
         if(other.tag == "Player")
         {
-            //kill the player, activate the respawn event.
-            Debug.Log("KillPlayer at: " + other.transform.position.ToString());
 
             #region switch dependent on what Obstacle Type the object that hit the player it is
             switch (oType)
@@ -29,7 +34,21 @@ public class Obstacle : MonoBehaviour {
                 case ObstacleType.Arrow:
                     if (gameObject != null)
                     {
+                        //kill the player, activate the respawn event.
+                        Debug.Log("Arrow KillPlayer at: " + other.transform.position.ToString());
                         StartCoroutine(KnockBackPlayer(other.gameObject));
+                    }
+                    else
+                    {
+                        Debug.Log("failed to get gameobject attached to script");
+                    }
+                    break;
+
+                case ObstacleType.Spike:
+                    if(gameObject != null)
+                    {
+                        Debug.Log("Spike KillPlayer at: " + other.transform.position.ToString());
+                        ActivatePlayerDeath();
                     }
                     else
                     {
@@ -48,6 +67,11 @@ public class Obstacle : MonoBehaviour {
     {
 		
 	}
+
+    void ActivatePlayerDeath()
+    {
+        StartCoroutine(gameManager.GetComponent<GameManager>().respawnPlayer());
+    }
 
     //When an object hits the player, if needed then force the player backwards over a certain period of time
     public IEnumerator KnockBackPlayer(GameObject player)
@@ -68,6 +92,7 @@ public class Obstacle : MonoBehaviour {
         }
 
         player.GetComponent<Rigidbody2D>().gravityScale = 3.0f;
+        ActivatePlayerDeath();
 
         StopCoroutine("Jump");
     }

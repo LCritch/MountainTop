@@ -8,8 +8,6 @@ public class Block : MonoBehaviour {
     public bool blockActive;
 
 
-
-
 	// Use this for initialization
 	void Start () 
     {
@@ -21,6 +19,8 @@ public class Block : MonoBehaviour {
     {
 		
 	}
+
+    //TODO Add ability for blocks to Move/Crumble over time.
 
     public void DisableBlock()
     {

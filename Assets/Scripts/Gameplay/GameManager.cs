@@ -5,20 +5,22 @@ using UnityEngine;
 public class GameManager : MonoBehaviour {
 
     public List<GameObject> Blocks;
-    public Vector3 startPoint;
+    public GameObject startPoint;
     public GameObject Player;
 
     public int blockAmount;
     public int deaths;
 
     public DeathUI deathScreen;
+    public PlayerController pController;
 
 	// Use this for initialization
 	void Start () 
     {
         Player = GameObject.FindGameObjectWithTag("Player");
+        pController = Player.GetComponent<PlayerController>();
         fillBlockList();
-        deathScreen.remainingBlocks = blockAmount;
+        blockAmount = Blocks.Count;
 	}
 	
 	// Update is called once per frame
@@ -26,7 +28,7 @@ public class GameManager : MonoBehaviour {
     {
 		if(Input.GetKeyDown(KeyCode.L))
         {
-            deathScreen.startDeathScreen();
+            StartCoroutine(respawnPlayer());
         }
 	}
 
@@ -39,21 +41,30 @@ public class GameManager : MonoBehaviour {
                 Blocks.Add(go);
             }
         }
-        blockAmount = Blocks.Count;
     }
 
-    public void KillPlayer()
+
+    //TODO Using enumerator, lerp to slow down timescale, activate another enumerator camera zoom to show playerloc
+    public IEnumerator respawnPlayer()
     {
-        /*stop all game logic, activate the death screen then teleport the player back to the start point
-         * disable any game control to stop player moving/jumping
-         * 
-         */
+        //Start death events
+        Player.GetComponent<SpriteRenderer>().enabled = false;
+        DeactivateBlockEvent();
+        deathScreen.startDeathScreen();
+        SetPlayerState(false);
+
+        yield return new WaitForSeconds(4.75f);
+
+        //Respawn player and allow to move again
+        SetPlayerState(true);
+        Player.transform.position = startPoint.transform.position;
+        Player.GetComponent<SpriteRenderer>().enabled = true;
 
     }
 
-    void respawnPlayer()
+    void DeactivateBlockEvent()
     {
-        Player.transform.position = startPoint;
+        deactivateRandomBlock();
         updateBlockCount();
         Blocks.Clear();
         fillBlockList();
@@ -69,10 +80,29 @@ public class GameManager : MonoBehaviour {
     void updateBlockCount()
     {
         //decrement the amount of blocks, send this value to the deathUI to show whilst respawning
-        if(blockAmount != 0)
+        if(blockAmount > 1)
         {
             blockAmount--;
             deathScreen.remainingBlocks = blockAmount;
+            deathScreen.blockRemainingText.text = "Blocks Remaining: " + deathScreen.remainingBlocks;
+        }
+        else
+        {
+            deathScreen.blockRemainingText.color = Color.red;
+            deathScreen.blockRemainingText.fontSize = 100;
+            deathScreen.blockRemainingText.text = "GAME OVER";
+        }
+    }
+
+    void SetPlayerState(bool alive)
+    {
+        if(alive && blockAmount >= 1)
+        {
+           pController.pState = PlayerController.PlayerState.Alive;
+        }
+        else 
+        {
+           pController.pState = PlayerController.PlayerState.Dead;
         }
     }
 }

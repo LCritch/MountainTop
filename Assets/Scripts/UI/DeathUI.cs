@@ -12,12 +12,18 @@ public class DeathUI : MonoBehaviour {
 
     public Text blockRemainingText;
 
+
+    Vector3 topStart = new Vector3(0,Screen.height * 2,0);
+    Vector3 bottomStart = new Vector3(0, -Screen.height * 2, 0);
+
 	// Use this for initialization
 	void Start () 
     {
         blockRemainingText.enabled = false;
-        topBlackBar.localScale = new Vector3(Screen.width, Screen.height / 2, 0);
-        bottomBlackBar.localScale = new Vector3(Screen.width, Screen.height / 2, 0);
+        topBlackBar.localScale = new Vector3(Screen.width, Screen.height/1.75f, 0);
+        bottomBlackBar.localScale = new Vector3(Screen.width, Screen.height/1.75f, 0);
+        topBlackBar.anchoredPosition = topStart;
+        bottomBlackBar.anchoredPosition = bottomStart;
 	}
 	
 	// Update is called once per frame
@@ -31,6 +37,8 @@ public class DeathUI : MonoBehaviour {
         StartCoroutine("MoveBlackBars");
     }
 
+    //TODO Time to make sure that in multiple resolutions both open & close together don't take more than 5 seconds
+    #region Close and open black bars upon death, will remain closed and show GameOver menu if blocks/Lives are at 0
     IEnumerator MoveBlackBars()
     {
         float seconds = 2.0f;
@@ -38,12 +46,12 @@ public class DeathUI : MonoBehaviour {
 
         while(time < seconds)
         {
-            topBlackBar.anchoredPosition = Vector3.Lerp(new Vector3(0,1000,0), new Vector3(0, 200, 0), (time / seconds));
-            bottomBlackBar.anchoredPosition = Vector3.Lerp(new Vector3(0, -1000, 0), new Vector3(0, -200,0), (time / seconds));
+            topBlackBar.anchoredPosition = Vector3.Lerp(topStart, new Vector3(0, (topStart.y/8), 0), (time / seconds));
+            bottomBlackBar.anchoredPosition = Vector3.Lerp(bottomStart, new Vector3(0, (bottomStart.y/8),0), (time / seconds));
             time += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
-        blockRemainingText.text = "Blocks Remaining: " + remainingBlocks;
+
         blockRemainingText.enabled = true;
         yield return new WaitForSeconds(2.0f);
         StartCoroutine("OpenBlackBars");
@@ -57,10 +65,11 @@ public class DeathUI : MonoBehaviour {
 
         while (time < seconds)
         {
-            topBlackBar.anchoredPosition = Vector3.Lerp(new Vector3(0, 200, 0), new Vector3(0, 1000, 0), (time / seconds));
-            bottomBlackBar.anchoredPosition = Vector3.Lerp(new Vector3(0, -200, 0), new Vector3(0, -1000, 0), (time / seconds));
+            topBlackBar.anchoredPosition = Vector3.Lerp(new Vector3(0, (topStart.y/8), 0), topStart, (time / seconds));
+            bottomBlackBar.anchoredPosition = Vector3.Lerp(new Vector3(0, (bottomStart.y/8), 0), bottomStart, (time / seconds));
             time += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
     }
+    #endregion
 }

@@ -10,7 +10,9 @@ public class PlayerController : MonoBehaviour {
         Dead
     }
 
-    PlayerState pState;
+    //TODO Add script for Player Camera to follow player, must have some movement lag
+
+    public PlayerState pState;
     bool jumpDown;
     public bool grounded;
     public GameObject player;
@@ -45,6 +47,12 @@ public class PlayerController : MonoBehaviour {
             {
                 StartCoroutine("Jump");
             }
+        }
+
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            //TODO Add Pause Menu with buttons for Main Menu/Resume/Options/Exit Game
+            Application.Quit();
         }
     }
 

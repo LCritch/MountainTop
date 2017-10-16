@@ -10,8 +10,6 @@ public class PlayerController : MonoBehaviour {
         Dead
     }
 
-    //TODO Add script for Player Camera to follow player, must have some movement lag
-
     public PlayerState pState;
     bool jumpDown;
     public bool grounded;

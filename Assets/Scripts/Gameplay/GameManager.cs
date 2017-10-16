@@ -49,6 +49,7 @@ public class GameManager : MonoBehaviour {
     {
         //Start death events
         Player.GetComponent<SpriteRenderer>().enabled = false;
+        Player.GetComponent<Rigidbody2D>().Sleep();
         DeactivateBlockEvent();
         deathScreen.startDeathScreen();
         SetPlayerState(false);
@@ -59,6 +60,7 @@ public class GameManager : MonoBehaviour {
         SetPlayerState(true);
         Player.transform.position = startPoint.transform.position;
         Player.GetComponent<SpriteRenderer>().enabled = true;
+        Player.GetComponent<Rigidbody2D>().WakeUp();
 
     }
 

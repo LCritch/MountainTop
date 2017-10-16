@@ -37,7 +37,6 @@ public class DeathUI : MonoBehaviour {
         StartCoroutine("MoveBlackBars");
     }
 
-    //TODO Time to make sure that in multiple resolutions both open & close together don't take more than 5 seconds
     #region Close and open black bars upon death, will remain closed and show GameOver menu if blocks/Lives are at 0
     IEnumerator MoveBlackBars()
     {

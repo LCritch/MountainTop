@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour {
     public List<GameObject> Blocks;
     public GameObject startPoint;
     public GameObject Player;
+    public Camera mainCamera;
 
     public int blockAmount;
     public int deaths;
@@ -21,6 +22,7 @@ public class GameManager : MonoBehaviour {
         pController = Player.GetComponent<PlayerController>();
         fillBlockList();
         blockAmount = Blocks.Count;
+        mainCamera = Camera.main;
 	}
 	
 	// Update is called once per frame
@@ -44,17 +46,18 @@ public class GameManager : MonoBehaviour {
     }
 
 
-    //TODO Using enumerator, lerp to slow down timescale, activate another enumerator camera zoom to show playerloc
     public IEnumerator respawnPlayer()
     {
         //Start death events
-        Player.GetComponent<SpriteRenderer>().enabled = false;
-        Player.GetComponent<Rigidbody2D>().Sleep();
-        DeactivateBlockEvent();
+        StartCoroutine(mainCamera.GetComponent<FollowCamera>().ZoomOnPlayer());
         deathScreen.startDeathScreen();
+        Player.GetComponent<Rigidbody2D>().Sleep();
+        yield return new WaitForSeconds(1.5f);
+        DeactivateBlockEvent();
+        Player.GetComponent<SpriteRenderer>().enabled = false;
         SetPlayerState(false);
 
-        yield return new WaitForSeconds(4.75f);
+        yield return new WaitForSeconds(2.0f);
 
         //Respawn player and allow to move again
         SetPlayerState(true);

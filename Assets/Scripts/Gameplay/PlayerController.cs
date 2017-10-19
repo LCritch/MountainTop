@@ -28,6 +28,7 @@ public class PlayerController : MonoBehaviour {
 	
     void Update()
     {
+        //TODO Add an InputManager addon to Unity, set the relevant buttons and feed them into this script.
         grounded = checkGroundCollision();
         if (pState == PlayerState.Alive)
         {

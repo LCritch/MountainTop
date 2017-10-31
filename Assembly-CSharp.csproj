@@ -55,6 +55,7 @@
      <Compile Include="Assets\Scripts\Gameplay\Obstacle.cs" />
      <Compile Include="Assets\Scripts\Gameplay\PlayerController.cs" />
      <Compile Include="Assets\Scripts\UI\DeathUI.cs" />
+     <Compile Include="Assets\Scripts\UI\PauseMenu.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity 5.6/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

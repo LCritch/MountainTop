@@ -2,12 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum GameState
+{
+    Paused,
+    InGame,
+    GameOver
+}
+
 public class GameManager : MonoBehaviour {
 
     public List<GameObject> Blocks;
     public GameObject startPoint;
     public GameObject Player;
     public Camera mainCamera;
+    public GameState gState;
+
 
     public int blockAmount;
     public int deaths;
@@ -23,6 +32,7 @@ public class GameManager : MonoBehaviour {
         fillBlockList();
         blockAmount = Blocks.Count;
         mainCamera = Camera.main;
+        gState = GameState.InGame;
 	}
 	
 	// Update is called once per frame
@@ -109,5 +119,20 @@ public class GameManager : MonoBehaviour {
         {
            pController.pState = PlayerController.PlayerState.Dead;
         }
+    }
+
+    public void PauseGame()
+    {
+        //Set timescale to zero, play UI intro anim
+        gState = GameState.Paused;
+        Time.timeScale = 0;
+        Debug.Log("Game Paused");
+    }
+
+    public void ResumeGame()
+    {
+        gState = GameState.InGame;
+        Time.timeScale = 1;
+        Debug.Log("Game Resumed");
     }
 }

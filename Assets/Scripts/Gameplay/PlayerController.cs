@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour {
     public bool grounded;
     public GameObject player;
 
+    public GameManager gm;
 
     public Rigidbody2D rb;
 
@@ -22,6 +23,7 @@ public class PlayerController : MonoBehaviour {
 	void Start () 
     {
         player = GameObject.FindGameObjectWithTag("Player");
+        gm = GameObject.FindObjectOfType<GameManager>();
         rb = GetComponent<Rigidbody2D>();
         pState = PlayerState.Alive;
 	}
@@ -30,7 +32,7 @@ public class PlayerController : MonoBehaviour {
     {
         //TODO Add an InputManager addon to Unity, set the relevant buttons and feed them into this script.
         grounded = checkGroundCollision();
-        if (pState == PlayerState.Alive)
+        if (pState == PlayerState.Alive && gm.gState == GameState.InGame)
         {
             if (Input.GetKey(KeyCode.D))
             {
@@ -47,11 +49,22 @@ public class PlayerController : MonoBehaviour {
                 StartCoroutine("Jump");
             }
         }
+        else
+        {
+            StopCoroutine("Jump");
+        }
 
         if(Input.GetKeyDown(KeyCode.Escape))
         {
             //TODO Add Pause Menu with buttons for Main Menu/Resume/Options/Exit Game
-            Application.Quit();
+            switch(gm.gState)
+            {
+                case GameState.InGame:
+                    gm.PauseGame(); break;
+
+                case GameState.Paused:
+                    gm.ResumeGame(); break;
+            }
         }
     }
 
@@ -88,7 +101,7 @@ public class PlayerController : MonoBehaviour {
         Debug.DrawRay(transform.position, Vector3.down*0.7f, Color.red);
 
         //use physics raycast to see if there is anything below the player then allow the jump, limit the distance to make sure its grounded
-            if (Physics2D.Raycast(boxBounds.center, Vector3.down, 0.7f, layerMask))
+            if (Physics2D.Raycast(boxBounds.center, Vector3.down, 0.7f, layerMask) && gm.gState == GameState.InGame)
             {
                 return true;
             }
